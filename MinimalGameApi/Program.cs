@@ -18,16 +18,30 @@ app.UseHttpsRedirection();
 
 var games = new List<Game>()
 {
-    new Game { Id = 1, Titulo = "Homem Aranha", Descricao = "Neste game, Peter Parker experiente e mais preparado para enfrentar a onda de crimes de Nova York. Em contrapartida, ele luta para conciliar sua vida pessoal e carreira caÛticas enquanto o destino de milhıes de nova-iorquinos pesa sobre seus ombros", Modo = "1 Jogador", Desenvolvedores = "Insomniac Games" },
+    new Game { Id = 1, Titulo = "Homem Aranha", Descricao = "Neste game, Peter Parker experiente e mais preparado para enfrentar a onda de crimes de Nova York. Em contrapartida, ele luta para conciliar sua vida pessoal e carreira caÔøΩticas enquanto o destino de milhÔøΩes de nova-iorquinos pesa sobre seus ombros", Modo = "1 Jogador", Desenvolvedores = "Insomniac Games" },
 
-    new Game { Id = 2, Titulo = "Grand Theft Auto V", Descricao = "O game se passa no estado ficcional de San Andreas, baseado na CalifÛrnia do Sul, nos EUA. Traz a histÛria de campanha simult‚nea de trÍs criminosos: o ladr„o de bancos aposentado Michael 'Mike' De Santa, o g‚ngster de rua Franklin Clinton e o traficante de armas psicopata Trevor Philips.", Modo = "1 Jogador, Multijogador online", Desenvolvedores = "Rockstar Games, Rockstar North" },
+    new Game { Id = 2, Titulo = "Grand Theft Auto V", Descricao = "O game se passa no estado ficcional de San Andreas, baseado na CalifÔøΩrnia do Sul, nos EUA. Traz a histÔøΩria de campanha simultÔøΩnea de trÔøΩs criminosos: o ladrÔøΩo de bancos aposentado Michael 'Mike' De Santa, o gÔøΩngster de rua Franklin Clinton e o traficante de armas psicopata Trevor Philips.", Modo = "1 Jogador, Multijogador online", Desenvolvedores = "Rockstar Games, Rockstar North" },
 
-    new Game { Id = 3, Titulo = "Cuphead", Descricao = "Cuphead È um jogo eletrÙnico de run and gun e plataforma criado pelos irm„os canadenses Chad e Jared Moldenhauer atravÈs da Studio MDHR. O jogo foi inspirado no estilo de animaÁ„o Rubber hose usado em desenhos animados da Era de Ouro da animaÁ„o americana, como o trabalho dos est˙dios Fleischer Studios, Warner Bros.", Modo = "1 Jogador, Multijogador local, Multijogador online", Desenvolvedores = "Studio MDHR" },
+    new Game { Id = 3, Titulo = "Cuphead", Descricao = "Cuphead ÔøΩ um jogo eletrÔøΩnico de run and gun e plataforma criado pelos irmÔøΩos canadenses Chad e Jared Moldenhauer atravÔøΩs da Studio MDHR. O jogo foi inspirado no estilo de animaÔøΩÔøΩo Rubber hose usado em desenhos animados da Era de Ouro da animaÔøΩÔøΩo americana, como o trabalho dos estÔøΩdios Fleischer Studios, Warner Bros.", Modo = "1 Jogador, Multijogador local, Multijogador online", Desenvolvedores = "Studio MDHR" },
 
-    new Game { Id = 4, Titulo = "Overwatch", Descricao = "Como um bom game do genero hero shooter, Overwatch designa jogadores em dois times de seis, com cada jogador tendo liberdade em escolher mais de 30 personagens, conhecidos como 'herÛis', cada um com um estilo de jogo ˙nico, dividido em trÍs papÈis gerais adequados ao seu objetivo.", Modo = "Multijogador online", Desenvolvedores = "Blizzard Entertainment, Iron Galaxy Studios" },
+    new Game { Id = 4, Titulo = "Overwatch", Descricao = "Como um bom game do genero hero shooter, Overwatch designa jogadores em dois times de seis, com cada jogador tendo liberdade em escolher mais de 30 personagens, conhecidos como 'herÔøΩis', cada um com um estilo de jogo ÔøΩnico, dividido em trÔøΩs papÔøΩis gerais adequados ao seu objetivo.", Modo = "Multijogador online", Desenvolvedores = "Blizzard Entertainment, Iron Galaxy Studios" },
 
-    new Game { Id = 5, Titulo = "Assassin's Creed Valhalla", Descricao = "No ano de 855 DC, uma jovem Eivor (o jogador tem a opÁ„o de escolher se Eivor È homem ou mulher, porÈm, canonicamente Eivor È mulher) testemunha seu cl„ ser massacrado e seus pais serem mortos por Kjotve, o Cruel durante uma festa para celebrar a alianÁa entre o cl„ de Varin e o cl„ do Corvo.", Modo = "1 Jogador", Desenvolvedores = "Ubisoft Montreal" },
+    new Game { Id = 5, Titulo = "Assassin's Creed Valhalla", Descricao = "No ano de 855 DC, uma jovem Eivor (o jogador tem a opÔøΩÔøΩo de escolher se Eivor ÔøΩ homem ou mulher, porÔøΩm, canonicamente Eivor ÔøΩ mulher) testemunha seu clÔøΩ ser massacrado e seus pais serem mortos por Kjotve, o Cruel durante uma festa para celebrar a alianÔøΩa entre o clÔøΩ de Varin e o clÔøΩ do Corvo.", Modo = "1 Jogador", Desenvolvedores = "Ubisoft Montreal" },
 };
+
+app.MapGet("/game", () =>
+{
+    return games;
+});
+
+app.MapGet("/game/{id}", (int id) =>
+{
+    var game = games.Find(g => g.Id == id);
+    if (game is null)
+        return Results.NotFound("Desculpe, esse jogo n√£o consta em nosso sistema :( ");
+
+    return Results.Ok(game);
+});
 
 app.Run();
 
