@@ -49,6 +49,19 @@ app.MapPost("/game", (Game game) =>
     return games;
 });
 
+app.MapPut("/game/{id}", (Game updateGame, int id) =>
+{
+    var game = games.Find(g => g.Id == id);
+    if (game is null)
+        return Results.NotFound("Desculpe, esse jogo não consta em nosso sistema :( ");
+
+    game.Titulo = updateGame.Titulo;
+    game.Descricao = updateGame.Descricao;
+    game.Modo = updateGame.Modo;
+    game.Desenvolvedores = updateGame.Desenvolvedores;
+
+    return Results.Ok(games);
+});
 
 app.Run();
 
