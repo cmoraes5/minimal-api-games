@@ -63,6 +63,17 @@ app.MapPut("/game/{id}", (Game updateGame, int id) =>
     return Results.Ok(games);
 });
 
+app.MapDelete("/game/{id}", (int id) =>
+{
+    var game = games.Find(g => g.Id == id);
+    if (game is null)
+        return Results.NotFound("Desculpe, esse jogo não consta em nosso sistema :( ");
+
+    games.Remove(game);
+
+    return Results.Ok(games);
+});
+
 app.Run();
 
 class Game
