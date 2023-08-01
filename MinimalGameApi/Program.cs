@@ -34,6 +34,15 @@ app.MapGet("/game", () =>
     return games;
 });
 
+app.MapGet("/game/{id}", (int id) =>
+{
+    var game = games.Find(g => g.Id == id);
+    if (game is null)
+        return Results.NotFound("Desculpe, esse jogo não consta em nosso sistema :( ");
+
+    return Results.Ok(game);
+});
+
 app.Run();
 
 class Game
