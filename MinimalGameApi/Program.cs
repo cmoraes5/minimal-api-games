@@ -43,6 +43,13 @@ app.MapGet("/game/{id}", (int id) =>
     return Results.Ok(game);
 });
 
+app.MapPost("/game", (Game game) =>
+{
+    games.Add(game);
+    return games;
+});
+
+
 app.Run();
 
 class Game
