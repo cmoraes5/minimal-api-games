@@ -46,11 +46,12 @@ app.MapGet("/game/{id}", (int id, [FromServices] IGameService gameService) =>
     return Results.Ok(game);
 });
 
-app.MapPost("/game/filter", ([FromBody] FilterRequest request, [FromServices] IGameService gameService) =>
+app.MapGet("/game/search", ([FromQuery] string title, [FromServices] IGameService gameService) =>
 {
-    var filteredGames = gameService.GetGamesByTitle(request.Title);
-    if (filteredGames is null)
-        return Results.NotFound("Desculpe, esse jogo não consta em nosso sistema :( ");
+    var filteredGames = gameService.GetGamesByTitle(title);
+
+    if (filteredGames.Count() == 0)
+        return Results.NotFound($"Desculpe, o jogo com titulo '{title}' não consta em nosso sistema :( ");
 
     return Results.Ok(filteredGames);
 });
@@ -69,8 +70,26 @@ app.MapPut("/game/{id}", (Game updateGame, int id, [FromServices] IGameService g
     return Results.Ok(updateGame);
 });
 
+app.MapPatch("/game/{id}", (int id, [FromBody] UpdateFieldRequest updateField, [FromServices] IGameService gameService) =>
+{
+    var updateGame = gameService.UpdateField(id, updateField);
+    if (updateGame is null)
+    {
+        return Results.NotFound("Desculpe, esse jogo não consta em nosso sistema :( ");
+    }
+
+    return Results.Ok(updateGame);
+});
+
+
 app.MapDelete("/game/{id}", (int id, [FromServices] IGameService gameService) =>
 {
+    var gameToDelete = gameService.GetGameById(id);
+    if (gameToDelete is null)
+    {
+        return Results.NotFound("Desculpe, esse jogo não consta em nosso sistema :( ");
+    }
+
     gameService.DeleteGame(id);
     return Results.NoContent();
 });

@@ -1,4 +1,5 @@
-﻿using MinimalGameApi.Interface;
+﻿using Microsoft.AspNetCore.Mvc;
+using MinimalGameApi.Interface;
 using MinimalGameApi.Services;
 
 public class GameService : IGameService
@@ -40,6 +41,32 @@ public class GameService : IGameService
             game.Modo = updateGame.Modo;
             game.Desenvolvedores = updateGame.Desenvolvedores;
         }
+    }
+
+    public Game UpdateField(int id, UpdateFieldRequest updateField)
+    {
+        var game = _games.Games.Find(game => game.Id == id);
+        if (game == null)
+        {
+            return null;
+        }
+
+        switch (updateField.Field)
+        {
+            case "Titulo":
+                game.Titulo = updateField.NewFieldValue;
+                break;
+
+            case "Descricao":
+                game.Descricao = updateField.NewFieldValue;
+                break;
+
+
+            default: 
+                return null;
+        }
+
+        return game;
     }
 
     public void DeleteGame(int id)
