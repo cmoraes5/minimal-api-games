@@ -22,7 +22,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseCors(c =>
 {
@@ -37,7 +37,7 @@ app.MapGet("/game", ([FromServices] IGameService gameService) =>
     return games;
 });
 
-app.MapGet("/game/{id}", (int id, [FromServices] IGameService gameService) =>
+app.MapGet("/game/{id}", (Guid id, [FromServices] IGameService gameService) =>
 {
     var game = gameService.GetGameById(id);
     if (game is null)
@@ -62,7 +62,7 @@ app.MapPost("/game", (Game addedGame, [FromServices] IGameService gameService) =
     return Results.Created($"/game/{addedGame.Id}", addedGame);
 });
 
-app.MapPut("/game/{id}", (Game updateGame, int id, [FromServices] IGameService gameService) =>
+app.MapPut("/game/{id}", (Game updateGame, Guid id, [FromServices] IGameService gameService) =>
 {
     updateGame.Id = id;
     gameService.UpdateGame(updateGame);
@@ -70,7 +70,7 @@ app.MapPut("/game/{id}", (Game updateGame, int id, [FromServices] IGameService g
     return Results.Ok(updateGame);
 });
 
-app.MapPatch("/game/{id}", (int id, [FromBody] UpdateFieldRequest updateField, [FromServices] IGameService gameService) =>
+app.MapPatch("/game/{id}", (Guid id, [FromBody] UpdateFieldRequest updateField, [FromServices] IGameService gameService) =>
 {
     var updateGame = gameService.UpdateField(id, updateField);
     if (updateGame is null)
@@ -82,7 +82,7 @@ app.MapPatch("/game/{id}", (int id, [FromBody] UpdateFieldRequest updateField, [
 });
 
 
-app.MapDelete("/game/{id}", (int id, [FromServices] IGameService gameService) =>
+app.MapDelete("/game/{id}", (Guid id, [FromServices] IGameService gameService) =>
 {
     var gameToDelete = gameService.GetGameById(id);
     if (gameToDelete is null)

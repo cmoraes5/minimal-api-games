@@ -16,7 +16,7 @@ public class GameService : IGameService
         return _games.Games;
     }
 
-    public Game GetGameById(int id)
+    public Game GetGameById(Guid id)
     {
         return _games.Games.Find(game => game.Id == id);
     }
@@ -28,7 +28,9 @@ public class GameService : IGameService
 
     public void AddGame(Game addedGame)
     {
+        addedGame.Id = Guid.NewGuid();
         _games.Games.Add(addedGame);
+        
     }
 
     public void UpdateGame(Game updateGame)
@@ -43,7 +45,7 @@ public class GameService : IGameService
         }
     }
 
-    public Game UpdateField(int id, UpdateFieldRequest updateField)
+    public Game UpdateField(Guid id, UpdateFieldRequest updateField)
     {
         var game = _games.Games.Find(game => game.Id == id);
         if (game == null)
@@ -69,7 +71,7 @@ public class GameService : IGameService
         return game;
     }
 
-    public void DeleteGame(int id)
+    public void DeleteGame(Guid id)
     {
         var game = GetGameById(id);
         if (game != null)
