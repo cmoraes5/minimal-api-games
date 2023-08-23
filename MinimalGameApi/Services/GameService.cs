@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MinimalGameApi;
 using MinimalGameApi.Interface;
 using MinimalGameApi.Services;
 
@@ -13,7 +14,8 @@ public class GameService : IGameService
 
     public List<Game> GetAllGames() 
     {
-        return _games.Games;
+        var context = new ApplicationDbContext();
+        return context.Games.ToList();
     }
 
     public Game GetGameById(Guid id)
@@ -28,9 +30,10 @@ public class GameService : IGameService
 
     public void AddGame(Game addedGame)
     {
-        addedGame.Id = Guid.NewGuid();
-        _games.Games.Add(addedGame);
-        
+        var context = new ApplicationDbContext();
+        context.Games.Add(addedGame);
+
+        context.SaveChanges();
     }
 
     public void UpdateGame(Game updateGame)

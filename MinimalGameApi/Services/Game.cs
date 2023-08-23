@@ -6,7 +6,7 @@
 
     public string Descricao { get; set; }
 
-    public string Modo { get; set; }
+    public string? Modo { get; set; }
 
     public string Desenvolvedores { get; set; }
 
