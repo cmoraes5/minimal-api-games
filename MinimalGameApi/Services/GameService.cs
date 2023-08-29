@@ -1,31 +1,32 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MinimalGameApi;
+﻿using MinimalGameApi;
 using MinimalGameApi.Interface;
-using MinimalGameApi.Services;
 
 public class GameService : IGameService
 {
-    private readonly GameList _games;
+    private readonly ApplicationDbContext _context;
 
-    public GameService(GameList gameList)
+    public GameService(ApplicationDbContext context)
     {
-        _games = gameList;
+        _context = context;
     }
 
     public List<Game> GetAllGames() 
     {
-        var context = new ApplicationDbContext();
-        return context.Games.ToList();
+        var _context = new ApplicationDbContext();
+        return _context.Games.ToList();
     }
 
     public Game GetGameById(Guid id)
     {
-        return _games.Games.Find(game => game.Id == id);
+        var _context = new ApplicationDbContext();
+        var gameById = _context.Games.SingleOrDefault(game => game.Id == id);
+
+        return gameById;
     }
 
     public IEnumerable<Game> GetGamesByTitle(string title)
     {
-        return _games.Games.Where(game => game.Titulo.Contains(title, StringComparison.OrdinalIgnoreCase));
+        return _context.Games.Where(game => game.Titulo.Contains(title, StringComparison.OrdinalIgnoreCase));
     }
 
     public void AddGame(Game addedGame)
@@ -38,19 +39,24 @@ public class GameService : IGameService
 
     public void UpdateGame(Game updateGame)
     {
-        var game = _games.Games.Find(game => game.Id == updateGame.Id);
+        var _context = new ApplicationDbContext();
+
+        var game = _context.Games.SingleOrDefault(game => game.Id == updateGame.Id);
+
         if (game != null)
         {
             game.Titulo = updateGame.Titulo;
             game.Descricao = updateGame.Descricao;
             game.Modo = updateGame.Modo;
             game.Desenvolvedores = updateGame.Desenvolvedores;
+
+            _context.SaveChanges();
         }
     }
 
     public Game UpdateField(Guid id, UpdateFieldRequest updateField)
     {
-        var game = _games.Games.Find(game => game.Id == id);
+        var game = GetGameById(id);
         if (game == null)
         {
             return null;
@@ -71,15 +77,21 @@ public class GameService : IGameService
                 return null;
         }
 
+        _context.SaveChanges();
+
         return game;
     }
 
     public void DeleteGame(Guid id)
     {
+        var _context = new ApplicationDbContext();
+
         var game = GetGameById(id);
         if (game != null)
         {
-            _games.Games.Remove(game);
+            _context.Games.Remove(game);
+
+            _context.SaveChanges();
         }
     }
 }
