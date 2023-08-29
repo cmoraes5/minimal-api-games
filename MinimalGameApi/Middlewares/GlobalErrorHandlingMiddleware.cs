@@ -28,7 +28,7 @@ namespace MinimalGameApi.Middlewares
         private static Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
             HttpStatusCode status;
-            string stackTrace = string.Empty;
+            string stackTrace;
             string message;
 
             switch (ex)

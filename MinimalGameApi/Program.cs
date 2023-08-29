@@ -4,9 +4,7 @@ using MinimalGameApi;
 using MinimalGameApi.Exceptions;
 using MinimalGameApi.Interface;
 using MinimalGameApi.Middlewares;
-using MinimalGameApi.Services;
 using MinimalGameApi.Vlidators;
-using System.ComponentModel.DataAnnotations;
 
 var builder = WebApplication.CreateBuilder(args);
 
