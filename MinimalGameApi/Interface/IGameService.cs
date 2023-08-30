@@ -9,5 +9,6 @@
         void AddGame(Game addedGame);
         void UpdateGame(Game updateGame);
         void DeleteGame(Guid id);
+        bool DoesGameWithTitleExist(string titulo);
     }
 }

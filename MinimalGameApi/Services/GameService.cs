@@ -1,4 +1,5 @@
-﻿using MinimalGameApi;
+﻿using Microsoft.EntityFrameworkCore;
+using MinimalGameApi;
 using MinimalGameApi.Interface;
 
 public class GameService : IGameService
@@ -93,5 +94,10 @@ public class GameService : IGameService
 
             _context.SaveChanges();
         }
+    }
+
+    public bool DoesGameWithTitleExist(string titulo)
+    {
+        return _context.Games.Any(game => game.Titulo == titulo);
     }
 }

@@ -5,6 +5,7 @@ using MinimalGameApi.Exceptions;
 using MinimalGameApi.Interface;
 using MinimalGameApi.Middlewares;
 using MinimalGameApi.Vlidators;
+using static MinimalGameApi.GameDTO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,7 +48,7 @@ app.MapGet("/game/{id}", (Guid id, [FromServices] IGameService gameService) =>
 
     if (game is null)
     {
-        throw new NotFoundException("Jogo não encontrado");
+        throw new NotFoundException("Jogo nao encontrado");
     }
 
     return Results.Ok(game);
@@ -78,6 +79,11 @@ app.MapPost("/game", (Game addedGame, [FromServices] IGameService gameService) =
         return null;
     }
 
+    if (gameService.DoesGameWithTitleExist(addedGame.Titulo))
+    {
+        throw new BadRequestException("Um jogo com mesmo titulo ja existe no sistema");
+    }
+
     gameService.AddGame(addedGame);
     return Results.Created($"/game/{addedGame.Id}", addedGame);
 });
@@ -88,7 +94,7 @@ app.MapPut("/game/{id}", (Game updateGame, Guid id, [FromServices] IGameService 
 
     if (existingGame is null)
     {
-        throw new NotFoundException("Jogo não encontrado");
+        throw new NotFoundException("Jogo nao encontrado");
     }
 
     updateGame.Id = id;
@@ -104,6 +110,11 @@ app.MapPut("/game/{id}", (Game updateGame, Guid id, [FromServices] IGameService 
 
         throw new BadRequestException(string.Join("\n", errorMessages));
         return null;
+    }
+
+    if (gameService.DoesGameWithTitleExist(updateGame.Titulo))
+    {
+        throw new BadRequestException("O novo titulo deve ser diferente do atual");
     }
 
 
@@ -129,7 +140,7 @@ app.MapDelete("/game/{id}", (Guid id, [FromServices] IGameService gameService) =
 
     if (gameToDelete is null)
     {
-        throw new NotFoundException("Jogo não encontrado");
+        throw new NotFoundException("Jogo nao encontrado");
     }
 
     gameService.DeleteGame(id);
