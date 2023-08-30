@@ -4,8 +4,7 @@ using MinimalGameApi;
 using MinimalGameApi.Exceptions;
 using MinimalGameApi.Interface;
 using MinimalGameApi.Middlewares;
-using MinimalGameApi.Vlidators;
-using static MinimalGameApi.GameDTO;
+using MinimalGameApi.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,9 +63,9 @@ app.MapGet("/game/{id}", (Guid id, [FromServices] IGameService gameService) =>
 //    return Results.Ok(filteredGames);
 //});
 
-app.MapPost("/game", (Game addedGame, [FromServices] IGameService gameService) =>
+app.MapPost("/game", (GameDTO addedGame, [FromServices] IGameService gameService) =>
 {
-    var validator = new GameValidator();
+    var validator = new GameDTOValidator();
     var validationResult = validator.Validate(addedGame);
 
     if (!validationResult.IsValid)
@@ -76,19 +75,26 @@ app.MapPost("/game", (Game addedGame, [FromServices] IGameService gameService) =
             .ToList();
 
         throw new BadRequestException(string.Join("\n", errorMessages));
-        return null;
     }
 
     if (gameService.DoesGameWithTitleExist(addedGame.Titulo))
     {
-        throw new BadRequestException("Um jogo com mesmo titulo ja existe no sistema");
+        throw new BadRequestException("Ja existe um jogo com esse mesmo titulo");
     }
 
-    gameService.AddGame(addedGame);
-    return Results.Created($"/game/{addedGame.Id}", addedGame);
+    var gameToAdd = new Game
+    {
+        Titulo = addedGame.Titulo,
+        Modo = addedGame.Modo,
+        Descricao = addedGame.Descricao,
+        Desenvolvedores = addedGame.Desenvolvedores
+    };
+
+    gameService.AddGame(gameToAdd);
+    return Results.Created($"/game/{gameToAdd.Id}", gameToAdd);
 });
 
-app.MapPut("/game/{id}", (Game updateGame, Guid id, [FromServices] IGameService gameService) =>
+app.MapPut("/game/{id}", (GameDTO updateGameDTO, Guid id, [FromServices] IGameService gameService) =>
 {
     var existingGame = gameService.GetGameById(id);
 
@@ -97,10 +103,17 @@ app.MapPut("/game/{id}", (Game updateGame, Guid id, [FromServices] IGameService 
         throw new NotFoundException("Jogo nao encontrado");
     }
 
-    updateGame.Id = id;
+    var updateGame = new Game
+    {
+        Id = id,
+        Titulo = updateGameDTO.Titulo,
+        Modo = updateGameDTO.Modo,
+        Descricao = updateGameDTO.Descricao,
+        Desenvolvedores = updateGameDTO.Desenvolvedores
+    };
 
-    var validator = new GameValidator();
-    var validationResult = validator.Validate(updateGame);
+    var validator = new GameDTOValidator();
+    var validationResult = validator.Validate(updateGameDTO);
 
     if (!validationResult.IsValid)
     {
@@ -109,14 +122,17 @@ app.MapPut("/game/{id}", (Game updateGame, Guid id, [FromServices] IGameService 
             .ToList();
 
         throw new BadRequestException(string.Join("\n", errorMessages));
-        return null;
     }
 
-    if (gameService.DoesGameWithTitleExist(updateGame.Titulo))
+    if (updateGameDTO.Titulo == existingGame.Titulo)
     {
         throw new BadRequestException("O novo titulo deve ser diferente do atual");
     }
 
+    if (gameService.DoesGameWithTitleExist(updateGameDTO.Titulo))
+    {
+        throw new BadRequestException("Ja existe um jogo com esse mesmo titulo");
+    }
 
     gameService.UpdateGame(updateGame);
     return Results.Ok(updateGame);

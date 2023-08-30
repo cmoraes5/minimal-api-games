@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+
 
 public class Game
-{
-    //[JsonIgnore]
-    public Guid Id { get; set; }
+
+{    public Guid Id { get; set; }
 
     [MaxLength(100)]
     public string Titulo { get; set; }
