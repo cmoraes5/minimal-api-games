@@ -124,12 +124,7 @@ app.MapPut("/game/{id}", (GameDTO updateGameDTO, Guid id, [FromServices] IGameSe
         throw new BadRequestException(string.Join("\n", errorMessages));
     }
 
-    if (updateGameDTO.Titulo == existingGame.Titulo)
-    {
-        throw new BadRequestException("O novo titulo deve ser diferente do atual");
-    }
-
-    if (gameService.DoesGameWithTitleExist(updateGameDTO.Titulo))
+    if (gameService.DoesGameWithTitleExist(updateGameDTO.Titulo) && updateGameDTO.Titulo != existingGame.Titulo)
     {
         throw new BadRequestException("Ja existe um jogo com esse mesmo titulo");
     }
