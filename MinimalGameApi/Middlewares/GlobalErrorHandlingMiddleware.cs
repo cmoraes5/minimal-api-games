@@ -46,7 +46,7 @@ namespace MinimalGameApi.Middlewares
                     break;
 
                 default:
-                    message = ex.Message;
+                    message = "Ocorreu um erro interno no servidor.";
                     status = HttpStatusCode.InternalServerError;
                     stackTrace = ex.StackTrace;
                     break;
